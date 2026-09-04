@@ -7,7 +7,7 @@ class Hero():
             health_stat: int,
             mana_stat: int,
             # attack_stat: int,
-            defense_stat: int,
+            # defense_stat: int,
             speed_stat: int,
             attack_list: list[Attack]
             # eventually add passives
@@ -16,22 +16,11 @@ class Hero():
         self.health_stat = health_stat
         self.mana_stat = mana_stat
         # self.attack_stat = attack_stat
-        self.defense_stat = defense_stat
+        # self.defense_stat = defense_stat
         self.speed_stat = speed_stat
         self.attack_list = attack_list
 
-# class Warrior(Hero):
-# might not need to sub class and instead lean on "composition"
-# -> each class is essentially the same, they just differ by stats and their attacks dict of dicts
-
-    # how to store the attack for each class/hero_name?
     def deal_damage(self, attack: Attack, recipient):
-        # depends on whcih attack from attack_list was chosen
-        # I assume looping through the attack_list will be done elsewhere?
-        # recipient.health_stat -= amount
-        # need to minus the mana of the hero, but I dont know how Attack will be picked via user input yet
-        # self.mana_stat -= self.attack_list[mana_cost]
-        
         recipient.health_stat -= attack.damage
         self.mana_stat -= attack.mana_cost
 
