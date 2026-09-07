@@ -1,6 +1,8 @@
 from classes.hero import Hero
 from classes.attack import Attack
 import sys
+from hero_selection import hero_selection
+from battle_seq_1 import battle_seq_1
 
 def main():
     print("Game start...")
@@ -15,35 +17,17 @@ def main():
     game_is_running = True
 
     while game_is_running:
-        gladiator = Hero(
-            "Gladiator", 
-            120, 
-            10, 
-            10, 
-            8, 
-            attack_list=[
-                Attack("Slash", 20, "physical", 2),
-                Attack("Shield Bash", 12, "physical", 3)
-            ]
-        )
-        enemy = Hero(
-            "Enemy", 
-            120, 
-            10, 
-            10, 
-            8, 
-            attack_list=[
-                Attack("Slash", 20, "physical", 2),
-                Attack("Shield Bash", 12, "physical", 3)
-            ]
-        )
+        # print(hero_selection())
+        your_heroes = hero_selection()
+        # these print statements can be their own file/module later. would be nice to see mostly functions in the game loop
+        print("Your party traverses the gauntlet. You sense the Fallen Angel is not far from where you currently are")
+        print("You are confronted by 2 Lesser Celestials, who obstructs your way to their Leader.")
+        print("Prepare for battle...")
+        #
+        # maybe a battle_seq_1() function? which contains calls to an Enemy class, and a seperate battle() function?
 
-        attack_choice = int(input("assume '0' is pressed"))
-
-        gladiator.deal_damage(
-            gladiator.attack_list[attack_choice],
-            enemy
-            )
+        # outcome_1 = battle_seq_1(your_heroes)
+        battle_seq_1(your_heroes)
 
         sys.exit()
 

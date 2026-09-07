@@ -6,8 +6,6 @@ class Hero():
             hero_name: str,
             health_stat: int,
             mana_stat: int,
-            # attack_stat: int,
-            # defense_stat: int,
             speed_stat: int,
             attack_list: list[Attack]
             # eventually add passives
@@ -15,8 +13,6 @@ class Hero():
         self.hero_name = hero_name
         self.health_stat = health_stat
         self.mana_stat = mana_stat
-        # self.attack_stat = attack_stat
-        # self.defense_stat = defense_stat
         self.speed_stat = speed_stat
         self.attack_list = attack_list
 
@@ -26,9 +22,10 @@ class Hero():
 
         print(f"{self.hero_name} used {attack.name} on {recipient.hero_name}")
         print(f"{recipient.hero_name} -{attack.damage}HP")
-        print(f"{recipient.hero_name} has {recipient.health_stat} remaining")
+        print(f"{recipient.hero_name} has {recipient.health_stat}HP remaining")
 
-    def take_damage(self, amount):
-        new_health = self.health_stat - amount
-        print(f"{self.hero_name}: {self.health_stat} - {amount}HP")
-        print(f"{self.hero_name}: {new_health}HP remaining")
+    # probs useless!
+    # def take_damage(self, amount):
+    #     new_health = self.health_stat - amount
+    #     print(f"{self.hero_name}: {self.health_stat} - {amount}HP")
+    #     print(f"{self.hero_name}: {new_health}HP remaining")

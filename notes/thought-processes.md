@@ -15,3 +15,12 @@ commit 3:
 - was unsure if a reference to an actual object (hero in chosen_list, from the og heroes list), was "enough"
     - i.e., will main.py be able to use the objects in chosen_list for the next bit of logic?
         - next bit is likely a battle loop
+
+commit 4:
+- hyphens cannot be used for file names
+    - python interprets any `-` as a subtraction op
+- not commenting out hero_selection() when importing into main.py
+    - everything at the top level is executed during the import itself before main() has even been reached
+        - top level = not indented inside a function or an `if __name__ == "__main__":` guard
+- might need to rename the Hero class since Ill probably be using it for Enemies too
+- possibly do the speed order next (determine_speed()?), then make a start on figuring out how to create a battle sequence

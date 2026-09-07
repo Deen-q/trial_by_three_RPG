@@ -2,7 +2,7 @@ from classes.hero import Hero
 from classes.attack import Attack
 
 # might need an mana_regen stat
-heroes = [ # name, hp, mana, def, speed, attack_list
+heroes: list[Hero] = [ # hero_name, health_stat, mana_stat, speed_stat, attack_list
     Hero(
         "Warrior",
         100,
@@ -21,7 +21,7 @@ heroes = [ # name, hp, mana, def, speed, attack_list
         # 20,
         17,
         attack_list=[ # how to make priest heal lol... minus numbers?
-            Attack("Heal", -20, "magic", 10),
+            Attack("Heal", -20, "nature", 10),
             Attack("Staff Thump", 10, "physical", 0)
         ]
     ),
@@ -43,7 +43,7 @@ heroes = [ # name, hp, mana, def, speed, attack_list
         # 25,
         10,
         attack_list=[
-            Attack("Lesser Heal", -15, "magic", 10),
+            Attack("Lesser Heal", -15, "nature", 10),
             Attack("Air Slice", 15, "air", 10)
         ]
     ),
@@ -96,4 +96,4 @@ def hero_selection() -> list[str]:
     # print("test! >>", chosen_list[2].attack_list[1].name)
     return chosen_list # should return the objects instead - back when it was chosen_list.append(hero.hero_name)
 
-hero_selection()
+# hero_selection() 
