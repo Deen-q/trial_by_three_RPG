@@ -7,14 +7,16 @@ class Hero():
             health_stat: int,
             mana_stat: int,
             speed_stat: int,
-            attack_list: list[Attack]
+            attack_list: list[Attack],
             # eventually add passives
+            is_enemy: bool
         ):
         self.hero_name = hero_name
         self.health_stat = health_stat
         self.mana_stat = mana_stat
         self.speed_stat = speed_stat
         self.attack_list = attack_list
+        self.is_enemy = is_enemy
 
     def deal_damage(self, attack: Attack, recipient):
         recipient.health_stat -= attack.damage
