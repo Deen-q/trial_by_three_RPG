@@ -37,3 +37,9 @@ commit 5:
     - also bare in mind it's not optimised - currently running more passes than it should
 - had some help with figuring out the early termination flag logic, so that it is slightly more efficient. makes no difference in this project, but it's interesting. like why how I didnt use sort() or sorted() etc
 - seems I wont be needing to subclass Hero to make an enemy Class after all?
+
+commit 6:
+- overthinking how to make the enemy attack i.e., making another for loop within `combatant.is_enemy` `if` statement
+    - led to 3 attacks from the enemy
+    - -> because 3 party members means 3 `hero.is_enemy == False` evaluations, per enemy turn!
+- apparently `random.randrange(len(x))` is even better. that's essentially what Im doing but with random.randint()
