@@ -11,9 +11,8 @@ def battle_logic(hero_party, enemy_party):
     party_is_alive = True
     enemies_are_alive = True
 
-    # determine order
-    # fight_order = [] # not needed, just an initial thought
-    combined_combatants = []
+    # determine fight/initiative order based on speed_stat
+    combined_combatants: list[object] = []
 
     for hero in hero_party:
         combined_combatants.append(hero)
@@ -30,7 +29,7 @@ def battle_logic(hero_party, enemy_party):
             # if it remains False, a swap never happened ONCE in that pass
             break
 
-    fight_order = []
+    fight_order: list[str] = [] # purely for printing purposes
     for combatant in combined_combatants:
         fight_order.append(combatant.hero_name)
 
@@ -40,18 +39,28 @@ def battle_logic(hero_party, enemy_party):
         print(f"Fight order is: {fight_order}")
 
         for combatant in combined_combatants:
-            # cant place "Turn x" here yet
             print(f"{combatant.hero_name}'s Turn:")
+
+            # "do enemy fighting logic"
             if combatant.is_enemy:
-                # "do enemy fighting logic"
                 enemy_attack_choice = random.randint(0, len(combatant.attack_list) -1)
                 # we'll make enemy always aim for the hero with the lowest health_stat... for now. future passives e.g., Berserkers "Provoke" (or "Bait", or "Taunt")
                 # hm maybe not now, we'll make their choice random too
                 who_the_enemy_attacks = random.randint(0, len(hero_party) -1)
-                # for hero in combined_combatants:
-                #     if hero.is_enemy == False:
-                #         combatant.deal_damage(combatant.attack_list[enemy_attack_choice], hero_party[who_the_enemy_attacks])
+
                 combatant.deal_damage(combatant.attack_list[enemy_attack_choice], hero_party[who_the_enemy_attacks])
+
+                if hero_party[who_the_enemy_attacks].health_stat < 1:
+                    dead_hero = hero_party[who_the_enemy_attacks] # see else block for more info
+                    print(f"{dead_hero.hero_name} is dead!")
+
+                    combined_combatants.remove(dead_hero)
+                    hero_party.remove(dead_hero)
+
+                    fight_order.remove(dead_hero.hero_name)
+                    if len(hero_party) < 1:
+                        party_is_alive = False
+                        break
 
             else:
                 print("Pick your move using the respective numbers: -> ")
@@ -63,15 +72,29 @@ def battle_logic(hero_party, enemy_party):
                 for index, enemy in enumerate(enemy_party, start=1):
                     print(f"{index}) {enemy.hero_name} | HP={enemy.health_stat}")
                 picked_enemy = (int(input()) -1)
-
-                ### >> enemies_are_alive if len(enemy_party) == 0?
                 
                 combatant.deal_damage(combatant.attack_list[picked_move], enemy_party[picked_enemy])
-                # if combatant.health_stat == 0: # cant test this rn since enemies cant attack
-                #     party_is_alive == False
-                # else:
-                #     pass
+
+                if enemy_party[picked_enemy].health_stat < 1:
+                    # locking in the reference first is way better and prevents indexing issues later
+                    dead_enemy = enemy_party[picked_enemy]
+                    print(f"{dead_enemy.hero_name} is dead!")
+
+                    combined_combatants.remove(dead_enemy) # for the outer loop
+                    fight_order.remove(dead_enemy.hero_name) # for the order list needed for printing
+                    enemy_party.remove(dead_enemy) # for the sake of easily checking if a party has died
+                    if len(enemy_party) < 1:
+                        enemies_are_alive = False
+                        break
+
         current_turn +=1
+    print("The fight has concluded!")
+    if enemies_are_alive == False:
+        print("The party is victorious.")
+    elif party_is_alive == False:
+        print("...")
+        print("The heroes were slain.")
+    else:
+        raise Exception("Either a draw occurred or some other unaccounted for outcome")
 
-
-#### >>> need logic to remove an object from hero_party or enemy_party respectively, if a member of their list is killed
+#### >>> NEXT: fix player input (sanitisation ig?)

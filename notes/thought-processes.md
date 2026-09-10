@@ -43,3 +43,71 @@ commit 6:
     - led to 3 attacks from the enemy
     - -> because 3 party members means 3 `hero.is_enemy == False` evaluations, per enemy turn!
 - apparently `random.randrange(len(x))` is even better. that's essentially what Im doing but with random.randint()
+
+commit 7:
+- my first working solution, before fixing it with something more robust - note this is just the else block since player input is how I chose to debug:
+
+``` python
+
+            else:
+                print("Pick your move using the respective numbers: -> ")
+                for index, attack in enumerate(combatant.attack_list, start=1):
+                    print(f"{index})", attack.name, f"| Damage: {attack.damage}", f"| Mana Cost: {attack.mana_cost}")
+                picked_move = (int(input()) -1)
+
+                print("And attack whom?")
+                for index, enemy in enumerate(enemy_party, start=1):
+                    print(f"{index}) {enemy.hero_name} | HP={enemy.health_stat}")
+                picked_enemy = (int(input()) -1)
+
+                ### >> enemies_are_alive if len(enemy_party) == 0?
+                
+                combatant.deal_damage(combatant.attack_list[picked_move], enemy_party[picked_enemy])
+
+                if enemy_party[picked_enemy].health_stat < 1:
+                    print(f"{enemy_party[picked_enemy].hero_name} is dead!")
+                    combined_combatants.remove(enemy_party[picked_enemy])
+                    # enemy_party.remove(enemy_party[picked_enemy]) ## <- i.e., first testing the fight_order.remove() order change thing
+
+                    # fight_order.remove(combined_combatants[picked_enemy].hero_name)
+                    fight_order.remove(enemy_party[picked_enemy].hero_name) # AH! removing an item changes the indexes!
+                    # surely just reversing them - making fight_order.remove first instead - isnt enough...?
+                    enemy_party.remove(enemy_party[picked_enemy])
+                    if len(enemy_party) < 1:
+                        enemies_are_alive = False # doesnt seem to end the while loop...? ## <-- this was before I realised I needed a `break`...!
+                        break # NEED A BREAK!
+
+        current_turn +=1
+    print("The fight has concluded!")
+
+```
+
+- less important but here's the beginning of the for loop, for completedness/documentations sake... way less useful than what's above:
+
+``` python
+
+        for combatant in combined_combatants:
+            # cant place "Turn x" here yet
+            print(f"{combatant.hero_name}'s Turn:")
+            if combatant.is_enemy:
+                # "do enemy fighting logic"
+                enemy_attack_choice = random.randint(0, len(combatant.attack_list) -1)
+                # we'll make enemy always aim for the hero with the lowest health_stat... for now. future passives e.g., Berserkers "Provoke" (or "Bait", or "Taunt")
+                # hm maybe not now, we'll make their choice random too
+                who_the_enemy_attacks = random.randint(0, len(hero_party) -1)
+
+                combatant.deal_damage(combatant.attack_list[enemy_attack_choice], hero_party[who_the_enemy_attacks])
+
+                if hero_party[who_the_enemy_attacks].health_stat < 1:
+                    # print(f"{combatant[who_the_enemy_attacks].hero_name} is dead!") # combatant is a Hero object, so isnt iterable!
+                    print(f"{hero_party[who_the_enemy_attacks].hero_name} is dead!")
+                    combined_combatants.remove(hero_party[who_the_enemy_attacks]) # remove the entire Hero object, hopefully
+                    hero_party.remove(hero_party[who_the_enemy_attacks]) # remove from original list[objects] for easy len(hero_party) check
+
+                    # fight_order.remove(combined_combatants[who_the_enemy_attacks].hero_name) # DIDNT WORK??
+                    fight_order.remove(hero_party[who_the_enemy_attacks].hero_name)
+                    if len(hero_party) < 1:
+                        party_is_alive = False
+                        break # note this block was fixed to mimic the else block -> I used the player inputs when debugging
+
+```
