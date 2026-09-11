@@ -111,3 +111,35 @@ commit 7:
                         break # note this block was fixed to mimic the else block -> I used the player inputs when debugging
 
 ```
+
+commit 8:
+- stuck:
+``` python
+                try: # since a non-int would immediately blow up before the "pls fix ur input" while loop was ever reached
+                    picked_move = (int(input()) -1)
+                    while picked_move < 0 or picked_move > len(combatant.attack_list) - 1 or type(picked_move) is not int: # bool is a subclass of int apparently!
+                    # ...and not isinstance(picked_move, int) -> previous idea
+                        print("Please pick a suitable attack")
+                        picked_move = (int(input()) -1)
+                except:
+                    print("Please pick a suitable attack")
+                    picked_move = (int(input()) -1)
+                
+
+                    # if picked_move >= 0 and picked_move <= len(combatant.attack_list) - 1: # incorrect use of or here, previously
+                    #     break
+```
+
+- next iteration:
+``` python
+                picked_move = (int(input()) -1)
+                while picked_move < 0 or picked_move > len(combatant.attack_list) - 1 or type(picked_move) is not int: # bool is a subclass of int apparently!
+                    print("Please pick a suitable attack") # had this in the try block before
+                    try: # since a non-int would immediately blow up before the "pls fix ur input" while loop was ever reached
+                        picked_move = (int(input()) -1) # ...and not isinstance(picked_move, int) -> previous idea
+                    except:
+                        pass
+```
+- the comments for commit 8 do a pretty good job. plus all the experimenting seen above
+
+next bit of work is doing the equivalent for hero_selection. then see if it's feasible to make a function that handles the logic for both, if theyre similar enough

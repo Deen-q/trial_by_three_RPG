@@ -63,11 +63,21 @@ def battle_logic(hero_party, enemy_party):
                         break
 
             else:
-                print("Pick your move using the respective numbers: -> ")
-                for index, attack in enumerate(combatant.attack_list, start=1):
-                    print(f"{index})", attack.name, f"| Damage: {attack.damage}", f"| Mana Cost: {attack.mana_cost}")
-                picked_move = (int(input()) -1)
-
+                # print("Pick your move using the respective numbers: -> ")
+                picked_move = -1 # known as a "sentinel"
+                while picked_move < 0 or picked_move > len(combatant.attack_list) - 1 or type(picked_move) is not int: # bool is a subclass of int apparently!
+                    try: # since a non-int would immediately blow up before the "pls fix ur input" while loop was ever reached
+                        print("Pick your move using the respective numbers: -> ")
+                        for index, attack in enumerate(combatant.attack_list, start=1):
+                            print(f"{index})", attack.name, f"| Damage: {attack.damage}", f"| Mana Cost: {attack.mana_cost}")
+                        picked_move = (int(input()) -1) # ...and not isinstance(picked_move, int) -> previous idea
+                        if picked_move > len(combatant.attack_list) -1:
+                            print(f"This hero does not have an attack on option {picked_move +1}")
+                    except ValueError: # a blank except also works, but prevents me from ctrl+C early -> KeyboardInterrupt
+                        print("Please pick a suitable attack")
+                        pass
+                        # remains -1 if non-int is pressed -> back to while loop until fulfilled
+                
                 print("And attack whom?")
                 for index, enemy in enumerate(enemy_party, start=1):
                     print(f"{index}) {enemy.hero_name} | HP={enemy.health_stat}")
