@@ -42,3 +42,4 @@ if __name__ == "__main__":
 # Better hero vs enemy stat balancing
 # Fix healing spells
 # Create the final battle
+# disable keyboard when waiting for input() prompts, currently ruins the output
