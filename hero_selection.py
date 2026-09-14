@@ -79,20 +79,39 @@ heroes: list[Hero] = [ # hero_name, health_stat, mana_stat, speed_stat, attack_l
 
 def hero_selection() -> list[str]:
 
+    total_hero_indexes: list[str] = []
+
     for index, hero in enumerate(heroes, start=1):
         print(f"{index})", hero.hero_name)
+        total_hero_indexes.append(str(index))
 
-    print("Pick 3 using the respective numbers:")
-    choice = input()
-    # handle wrong inputs later
+    while True:
+        try:
+            print("Pick 3 using the respective numbers (e.g., 235):")
+            picked_heroes = input()
+
+            if len(picked_heroes) != 3:
+                raise ValueError("wrong length")
+
+            if len(set(picked_heroes)) != 3:
+                raise ValueError("cannot use duplicates")
+
+            for index in picked_heroes:
+                if index not in total_hero_indexes:
+                    raise ValueError("invalid index - out of range")
+
+            break # reached if nothing above is raised
+
+        except ValueError:
+            print("Please pick exactly 3 different valid options e.g., 235 for Priest, Mage and Assassin")
     
-    # chosen_indexes = list(choice) # .split doesnt work in python here
-    chosen_indexes = [int(x) for x in str(choice)] # neither does list(int(choice))
+    chosen_indexes = []
+    for single_number_input in picked_heroes: # str are iterable
+        chosen_indexes.append(int(single_number_input))
+
     chosen_list = []
+
     for index, hero in enumerate(heroes, start=1):
-        # for i in chosen_indexes:
-            # if index in chosen_indexes:
-            #     chosen_list.append(i)
         if index in chosen_indexes:
             # chosen_list.append(hero.hero_name)
             chosen_list.append(hero) # originally unsure if the reference to Hero objects would work when used in main.py
@@ -102,7 +121,4 @@ def hero_selection() -> list[str]:
         named_hero_list.append(hero.hero_name)
 
     print("You have picked ", named_hero_list)
-    # print("test! >>", chosen_list[2].attack_list[1].name)
-    return chosen_list # should return the objects instead - back when it was chosen_list.append(hero.hero_name)
-
-# hero_selection() 
+    return chosen_list

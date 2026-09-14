@@ -143,3 +143,116 @@ commit 8:
 - the comments for commit 8 do a pretty good job. plus all the experimenting seen above
 
 next bit of work is doing the equivalent for hero_selection. then see if it's feasible to make a function that handles the logic for both, if theyre similar enough
+
+- much bigger pain in the butt than anticipated
+```python
+def hero_selection() -> list[str]:
+
+    total_hero_indexes: list[str] = []
+
+    for index, hero in enumerate(heroes, start=1):
+        print(f"{index})", hero.hero_name)
+        total_hero_indexes.append(str(index))
+
+    # print("Pick 3 using the respective numbers:")
+    # choice = input()
+    # picked_heroes: int = -1
+
+    # while picked_heroes < 1 or picked_heroes > len(heroes) +1:
+    # while picked_heroes < len(3) or picked_heroes > len(4):
+
+    # total_hero_indexes_str = ""
+    # for x in total_hero_indexes:
+    #     total_hero_indexes_str += str(x)
+    # total_hero_indexes_int = int(total_hero_indexes_str)
+    picked_heroes = "-1"
+
+    while picked_heroes not in total_hero_indexes:
+        #  and 1 < picked_heroes > 3
+        try:
+            print("Pick 3 using the respective numbers:")
+            picked_heroes = int(input())
+
+            for index in picked_heroes:
+                if index not in total_hero_indexes:
+                    raise ValueError("invalid index")
+
+            ### for later:
+            # generate values from 1 to len(heroes)
+            ## if possible_options not in picked_heroes print(f"A hero option {picked_heroes} does not exist...")
+            # if total_hero_indexes not in picked_heroes:
+            #     print(f"A hero option {picked_heroes} does not exist...")
+        except ValueError:
+            print("Please pick suitable options e.g., 235 for Priest, Mage and Assassin")
+            pass
+
+    
+    chosen_indexes = []
+    for single_number_input in picked_heroes: # str are iterable
+        chosen_indexes.append(int(single_number_input))
+
+    chosen_list = []
+
+    for index, hero in enumerate(heroes, start=1):
+        # for i in chosen_indexes:
+            # if index in chosen_indexes:
+            #     chosen_list.append(i)
+        if index in chosen_indexes:
+            # chosen_list.append(hero.hero_name)
+            chosen_list.append(hero) # originally unsure if the reference to Hero objects would work when used in main.py
+
+    named_hero_list = []
+    for hero in chosen_list:
+        named_hero_list.append(hero.hero_name)
+
+    print("You have picked ", named_hero_list)
+    # print("test! >>", chosen_list[2].attack_list[1].name)
+    return chosen_list # should return the objects instead - back when it was chosen_list.append(hero.hero_name)
+
+# hero_selection() 
+```
+
+- another attempt:
+ ```python
+    while picked_heroes not in total_hero_indexes and len(picked_heroes) > 1 and len(picked_heroes) < 3:
+        #  and 1 < picked_heroes > 3
+        try:
+            print("Pick 3 using the respective numbers:")
+            picked_heroes = input()
+
+            for index in picked_heroes:
+                if index not in total_hero_indexes:
+                    raise ValueError("invalid index")
+                else:
+                    picked_heroes = int(picked_heroes)
+
+            ### for later:
+            # generate values from 1 to len(heroes)
+            ## if possible_options not in picked_heroes print(f"A hero option {picked_heroes} does not exist...")
+            # if total_hero_indexes not in picked_heroes:
+            #     print(f"A hero option {picked_heroes} does not exist...")
+        except ValueError:
+            print("Please pick suitable options e.g., 235 for Priest, Mage and Assassin")
+            pass
+ ```
+ final conclusions:
+
+- while condition combined two checks with `and`: `picked_heroes not in total_hero_indexes and len(picked_heroes) != 3`
+    - assumed both conditions needed to be true to keep looping (correct understanding of `and`), but didn't check whether that was the RIGHT relationship for this case
+    - traced "aaa": not in valid list -> True (garbage, correctly flagged). BUT len("aaa") != 3 -> False (length happens to be right, even though content is garbage)
+    - True and False = False -> whole condition False -> loop exits -> escapes with bad data still sitting in picked_heroes
+        - "aaa" then hits int("a") outside the loop, uncaught -> crash
+    - root cause: needed "keep looping if EITHER thing is still wrong" (an `or` relationship), not "keep looping only while BOTH are wrong" (`and`)
+
+- even fixing and -> or wouldn't fully solve it:
+    - "is every character valid" isn't one comparison, it's N comparisons (one per character)
+    - a for loop can't be embedded inside a single while boolean line
+    - so the check was always going to need to live somewhere with more room than one line
+
+- the fix: stopped trying to frontload every condition into the while line itself
+    - `while True:` as the loop entry -> trivially always true, no bounds logic needed up front
+    - real validation (length check, per-character check, raise ValueError) moved into the loop body, where full statement power (loops, multiple raises) is available
+    - `break` only reached once nothing above it raised -> loop naturally stops exactly when input is fully valid
+
+- general takeaway: reach for `while True` + `break` as soon as the stopping condition needs more than a flat comparison to express
+    - if tempted to use a proxy check (like length) to approximate a deeper check (like "every character is valid"), that's the tell the two checks have silently drifted apart
