@@ -1,4 +1,5 @@
 from classes.attack import Attack
+from print_effects import slow_print, red_text, green_text, yellow_text
 
 class Hero():
     def __init__(
@@ -22,9 +23,9 @@ class Hero():
         recipient.health_stat -= attack.damage
         self.mana_stat -= attack.mana_cost
 
-        print(f"{self.hero_name} used {attack.name} on {recipient.hero_name}")
-        print(f"{recipient.hero_name} -{attack.damage}HP")
-        print(f"{recipient.hero_name} has {recipient.health_stat}HP remaining")
+        slow_print(f"{self.hero_name} used {yellow_text(attack.name)} on {recipient.hero_name}")
+        print(f"{recipient.hero_name} -{red_text(attack.damage)}HP")
+        print(f"{recipient.hero_name} has {green_text(recipient.health_stat)}HP remaining")
 
     # probs useless!
     # def take_damage(self, amount):

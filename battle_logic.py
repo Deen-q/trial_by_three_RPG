@@ -1,5 +1,6 @@
 from hero_selection import hero_selection
 import random
+from print_effects import slow_print, loading, red_text, green_text, yellow_text
 
 # perhaps I generate a list, and that list determines the order of who fights
     # then, loop again: each person must give an input
@@ -7,7 +8,7 @@ import random
     # and also check each turn whos dead
     # and/or while loop -> while chosen_heroes or enemies are ALIVE etc etc
 
-def battle_logic(hero_party, enemy_party):
+def battle_logic(hero_party, enemy_party) -> bool:
     party_is_alive = True
     enemies_are_alive = True
 
@@ -35,8 +36,8 @@ def battle_logic(hero_party, enemy_party):
 
     current_turn = 1
     while party_is_alive and enemies_are_alive:
-        print(f"Turn: {current_turn}")
-        print(f"Fight order is: {fight_order}")
+        print(f"{yellow_text('Turn:')} {current_turn}")
+        slow_print(f"{yellow_text('Fight order is:')} {fight_order}")
 
         for combatant in combined_combatants:
             print(f"{combatant.hero_name}'s Turn:")
@@ -52,7 +53,7 @@ def battle_logic(hero_party, enemy_party):
 
                 if hero_party[who_the_enemy_attacks].health_stat < 1:
                     dead_hero = hero_party[who_the_enemy_attacks] # see else block for more info
-                    print(f"{dead_hero.hero_name} is dead!")
+                    slow_print(f"{dead_hero.hero_name} is {red_text('dead')}!")
 
                     combined_combatants.remove(dead_hero)
                     hero_party.remove(dead_hero)
@@ -88,7 +89,7 @@ def battle_logic(hero_party, enemy_party):
                 if enemy_party[picked_enemy].health_stat < 1:
                     # locking in the reference first is way better and prevents indexing issues later
                     dead_enemy = enemy_party[picked_enemy]
-                    print(f"{dead_enemy.hero_name} is dead!")
+                    slow_print(f"{dead_enemy.hero_name} is {red_text('dead')}!")
 
                     combined_combatants.remove(dead_enemy) # for the outer loop
                     fight_order.remove(dead_enemy.hero_name) # for the order list needed for printing
@@ -98,13 +99,13 @@ def battle_logic(hero_party, enemy_party):
                         break
 
         current_turn +=1
-    print("The fight has concluded!")
+    slow_print("The fight has concluded!")
     if enemies_are_alive == False:
-        print("The party is victorious.")
+        slow_print("The party is victorious.")
+        return True
     elif party_is_alive == False:
-        print("...")
-        print("The heroes were slain.")
+        loading()
+        slow_print("The heroes were slain.")
+        return False
     else:
         raise Exception("Either a draw occurred or some other unaccounted for outcome")
-
-#### >>> NEXT: fix player input (sanitisation ig?)

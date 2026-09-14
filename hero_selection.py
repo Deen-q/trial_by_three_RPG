@@ -1,5 +1,6 @@
 from classes.hero import Hero
 from classes.attack import Attack
+from print_effects import slow_print
 
 # might need an mana_regen stat
 heroes: list[Hero] = [ # hero_name, health_stat, mana_stat, speed_stat, attack_list
@@ -87,7 +88,7 @@ def hero_selection() -> list[str]:
 
     while True:
         try:
-            print("Pick 3 using the respective numbers (e.g., 235):")
+            slow_print("Pick 3 using the respective numbers (e.g., 235):")
             picked_heroes = input()
 
             if len(picked_heroes) != 3:
